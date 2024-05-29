@@ -46,6 +46,32 @@ Implementar uma funcionalidade que analise dados históricos de compra e manuten
 - Nesse repositório você também pode encontrar um arquivo chamado `suggested_schema.sql` com a estrutura do banco de dados que você pode utilizar para o projeto, juntamente com um arquivo chamado `sample_seed.sql`, para realizar o _seed_ do banco de dados com dados de exemplo. Este é apenas um esquema sugerido e você não precisa seguí-lo à risca.
 - Também está disponível um arquivo chamado `sample_api_documentation.md` com exemplos de como você pode implementar as rotas da sua API.
 
+## Referências e Ferramentas:
+- [React.js](https://reactjs.org/)
+- [Node.js](https://nodejs.org/en/)
+- [Nest.js](https://nestjs.com/)
+- [Laravel](https://laravel.com/)
+- [Jest](https://jestjs.io/)
+- [Cypress](https://www.cypress.io/)
+- [JWT](https://jwt.io/)
+- [jsPDF](https://github.com/parallax/jsPDF)
+- [SheetJS](https://sheetjs.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Heroku](https://www.heroku.com/)
+- [Fly.io](https://fly.io/)
+- [Neon](https://neon.tech)
+- [AWS](https://aws.amazon.com/)
+- [DigitalOcean](https://www.digitalocean.com/)
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [Docker](https://www.docker.com/)
+- [Kubernetes](https://kubernetes.io/)
+- [Postman](https://www.postman.com/)
+- [Insomnia](https://insomnia.rest/)
+- [Swagger](https://swagger.io/)
+- [OpenAPI](https://www.openapis.org/)
+
+
 ## Entrega:
 - O código deve ser disponibilizado em um repositório Git público. Instruções claras sobre como rodar a aplicação localmente devem ser fornecidas no README do repositório. 
 - Após concluído, enviar o link com o repositório e seu CV para arielton@grupoenergia.eng.br.
