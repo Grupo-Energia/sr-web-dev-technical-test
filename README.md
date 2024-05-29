@@ -15,7 +15,7 @@ O candidato deve criar uma aplicação web utilizando React.js para o frontend e
 ## Requisitos:
 - **Cadastro, edição e exclusão de veículos (CRUD).**
 - **Visualização da lista de veículos com informações detalhadas (modelo, ano, placa, etc.).**
-- **Implementar um sistema de notificações para alertar sobre eventos importantes (manutenção, troca de pneus, etc.). _(Obs: Isso pode ser feito apenas dentro do sistema, com um componente de notificação (como um "sino") na interface)_**
+- **Implementar um sistema de notificações para alertar sobre eventos importantes (manutenção, troca de pneus, etc.). _(Obs: Isso pode ser feito apenas dentro do sistema, com um componente de notificação (como um "sino") na interface)_.**
 - **Implementar automações que auxiliem na gestão da frota (descrições abaixo).**
 
 ### Automação 1 - Previsão de Desgaste dos Pneus:
