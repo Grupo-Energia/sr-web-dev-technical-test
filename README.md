@@ -47,7 +47,7 @@ Implementar uma funcionalidade que analise dados históricos de compra e manuten
 - Também está disponível um arquivo chamado `sample_api_documentation.md` com exemplos de como você pode implementar as rotas da sua API.
 
 ## Entrega:
-- O código deve ser disponibilizado em um repositório Git público ou privado. Instruções claras sobre como rodar a aplicação localmente devem ser fornecidas no README do repositório. 
+- O código deve ser disponibilizado em um repositório Git público. Instruções claras sobre como rodar a aplicação localmente devem ser fornecidas no README do repositório. 
 - Após concluído, enviar o link com o repositório e seu CV para arielton@grupoenergia.eng.br.
 
 
