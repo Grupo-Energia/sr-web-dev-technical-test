@@ -10,7 +10,7 @@ Desenvolver uma aplicação de gerenciamento de frotas com foco em automações.
 10 dias
 
 ## Descrição do Projeto:
-O candidato deve criar uma aplicação web utilizando React.js para o frontend e Node.js ou Laravel para o backend. A aplicação deve gerenciar uma frota de veículos, fornecendo funcionalidades de automação para melhorar a eficiência e a manutenção dos veículos.
+O candidato deve criar uma aplicação web utilizando React.js para o frontend e Node.js ou Laravel para o backend. A aplicação deve gerenciar uma frota de veículos, fornecendo funcionalidades de automação para melhorar a eficiência e a manutenção dos veículos. Para o frontend, pode ser utilizado qualquer framework ou biblioteca adicional que o candidato desejar (como Next.js, Remix, Waku ou Solid). Para o backend, o candidato pode utilizar qualquer banco de dados relacional de sua escolha (como PostgreSQL, MySQL, MariaDB ou CockroachDB) e pode utilizar qualquer framework ou biblioteca adicional que desejar (como Nest.js, Laravel, Express.js, Fastify ou Hono).
 
 ## Requisitos:
 - **Cadastro, edição e exclusão de veículos (CRUD).**
@@ -47,25 +47,59 @@ Implementar uma funcionalidade que analise dados históricos de compra e manuten
 - Também está disponível um arquivo chamado `sample_api_documentation.md` com exemplos de como você pode implementar as rotas da sua API.
 
 ## Referências e Ferramentas:
+
+### Frameworks e Bibliotecas Frontend
 - [React.js](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [Remix](https://remix.run/)
+- [Solid](https://www.solidjs.com/)
+- [Waku](https://waku.gg/)
+- [Chakra UI](https://chakra-ui.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+
+### Frameworks e Bibliotecas Backend
 - [Node.js](https://nodejs.org/en/)
+- [Express.js](https://expressjs.com/)
+- [Fastify](https://www.fastify.io/)
+- [Hono](https://hono.dev/)
 - [Nest.js](https://nestjs.com/)
 - [Laravel](https://laravel.com/)
+
+### Banco de Dados
+- [PostgreSQL](https://www.postgresql.org/)
+- [MySQL](https://www.mysql.com/)
+- [MariaDB](https://mariadb.org/)
+- [CockroachDB](https://www.cockroachlabs.com/)
+- [Neon](https://neon.tech)
+
+### Linguagens de Programação
+- [TypeScript](https://www.typescriptlang.org/)
+
+### Ferramentas de Testes
 - [Jest](https://jestjs.io/)
 - [Cypress](https://www.cypress.io/)
+
+### Autenticação e Autorização
 - [JWT](https://jwt.io/)
+
+### Exportação de Relatórios em PDF e Excel
 - [jsPDF](https://github.com/parallax/jsPDF)
 - [SheetJS](https://sheetjs.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
+
+### Deploy
 - [Heroku](https://www.heroku.com/)
 - [Fly.io](https://fly.io/)
-- [Neon](https://neon.tech)
 - [AWS](https://aws.amazon.com/)
 - [DigitalOcean](https://www.digitalocean.com/)
 - [Vercel](https://vercel.com/)
 - [Netlify](https://www.netlify.com/)
+
+### Containers e Orquestração
 - [Docker](https://www.docker.com/)
 - [Kubernetes](https://kubernetes.io/)
+
+### Documentação de APIs
 - [Postman](https://www.postman.com/)
 - [Insomnia](https://insomnia.rest/)
 - [Swagger](https://swagger.io/)
