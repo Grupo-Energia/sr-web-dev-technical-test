@@ -1,3 +1,6 @@
+![repo](https://github.com/Grupo-Energia/sr-web-dev-technical-test/assets/162369419/10a6a72b-0bf4-42ce-bee0-31ebe7a368f5)
+
+
 # Descrição do Teste Técnico para Desenvolvedor Fullstack Sênior - Grupo Energia
 
 ## Objetivo:
