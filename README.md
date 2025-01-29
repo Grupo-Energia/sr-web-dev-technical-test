@@ -6,8 +6,8 @@
 ## Objetivo:
 Desenvolver uma aplicação de gerenciamento de frotas com foco em automações.
 
-## Prazo para entrega do projeto:
-10 dias
+## Prazo para entrega sugerido para o projeto:
+10 ~ 15 dias
 
 ## Descrição do Projeto:
 O candidato deve criar uma aplicação web utilizando React.js para o frontend e Node.js ou Laravel para o backend. A aplicação deve gerenciar uma frota de veículos, fornecendo funcionalidades de automação para melhorar a eficiência e a manutenção dos veículos. Para o frontend, pode ser utilizado qualquer framework ou biblioteca adicional que o candidato desejar (como Next.js, Remix, Waku ou Solid). Para o backend, o candidato pode utilizar qualquer banco de dados relacional de sua escolha (como PostgreSQL, MySQL, MariaDB ou CockroachDB) e pode utilizar qualquer framework ou biblioteca adicional que desejar (como Nest.js, Laravel, Express.js, Fastify ou Hono).
