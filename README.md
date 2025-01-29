@@ -10,7 +10,7 @@ Desenvolver uma aplicação de gerenciamento de frotas com foco em automações.
 10 ~ 15 dias
 
 ## Descrição do Projeto:
-O candidato deve criar uma aplicação web utilizando React.js para o frontend e Node.js ou Laravel para o backend. A aplicação deve gerenciar uma frota de veículos, fornecendo funcionalidades de automação para melhorar a eficiência e a manutenção dos veículos. Para o frontend, pode ser utilizado qualquer framework ou biblioteca adicional que o candidato desejar (como Next.js, Remix, Waku ou Solid). Para o backend, o candidato pode utilizar qualquer banco de dados relacional de sua escolha (como PostgreSQL, MySQL, MariaDB ou CockroachDB) e pode utilizar qualquer framework ou biblioteca adicional que desejar (como Nest.js, Laravel, Express.js, Fastify ou Hono).
+O candidato deve criar uma aplicação web utilizando React.js para o frontend e Node.js para o backend. A aplicação deve gerenciar uma frota de veículos, fornecendo funcionalidades de automação para melhorar a eficiência e a manutenção dos veículos. Para o frontend, pode ser utilizado qualquer framework ou biblioteca adicional que o candidato desejar (como Next.js, Remix, Waku ou Solid). Para o backend, o candidato pode utilizar qualquer banco de dados relacional de sua escolha (como PostgreSQL, MySQL, MariaDB ou CockroachDB) e pode utilizar qualquer framework ou biblioteca adicional que desejar (como Nest.js, Express.js, Fastify ou Hono).
 
 ## Requisitos:
 - **Cadastro, edição e exclusão de veículos (CRUD).**
@@ -64,7 +64,6 @@ Implementar uma funcionalidade que analise dados históricos de compra e manuten
 - [Fastify](https://www.fastify.io/)
 - [Hono](https://hono.dev/)
 - [Nest.js](https://nestjs.com/)
-- [Laravel](https://laravel.com/)
 
 ### Banco de Dados
 - [PostgreSQL](https://www.postgresql.org/)
