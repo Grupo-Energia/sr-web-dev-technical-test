@@ -1,64 +1,68 @@
--- Tabela de veículos
-CREATE TABLE vehicles
+-- Tabela de funcionários
+CREATE TABLE funcionarios
 (
   id SERIAL PRIMARY KEY,
-  model VARCHAR(255) NOT NULL,
-  year INTEGER NOT NULL,
-  license_plate VARCHAR(20) NOT NULL,
-  mileage INTEGER NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tabela de pneus
-CREATE TABLE tires
-(
-  id SERIAL PRIMARY KEY,
-  vehicle_id INTEGER REFERENCES vehicles(id),
-  installation_date DATE NOT NULL,
-  mileage_at_installation INTEGER NOT NULL,
-  predicted_replacement_mileage INTEGER NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
--- Tabela de manutenção
-CREATE TABLE maintenance
-(
-  id SERIAL PRIMARY KEY,
-  vehicle_id INTEGER REFERENCES vehicles(id),
-  type VARCHAR(50) NOT NULL,
-  description TEXT,
-  mileage_at_maintenance INTEGER NOT NULL,
-  date DATE NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
--- Tabela de usuários
-CREATE TABLE users
-(
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
+  nome VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
--- Tabela de análise de custos
-CREATE TABLE cost_analysis
+-- Tabela de produtos
+CREATE TABLE produtos
 (
   id SERIAL PRIMARY KEY,
-  vehicle_id INTEGER REFERENCES vehicles(id),
-  item_type VARCHAR(50) NOT NULL,
-  cost DECIMAL(10, 2) NOT NULL,
-  purchase_date DATE NOT NULL,
-  performance_score INTEGER NOT NULL,
+  codigo_sistema VARCHAR(100) NOT NULL UNIQUE,
+  nome VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Tabela de estoque de produtos
+CREATE TABLE estoques_produtos
+(
+  id SERIAL PRIMARY KEY,
+  produto_id INTEGER REFERENCES produtos(id) ON DELETE CASCADE,
+  quantidade_sistema INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de contagens de estoque
+CREATE TABLE contagens_estoque
+(
+  id SERIAL PRIMARY KEY,
+  codigo VARCHAR(50) NOT NULL UNIQUE,
+  data_agendada DATE NOT NULL,
+  responsavel_id INTEGER REFERENCES funcionarios(id),
+  status VARCHAR(50) NOT NULL DEFAULT 'EM_ANDAMENTO',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT check_status CHECK (status IN ('EM_ANDAMENTO', 'FINALIZADA'))
+);
+
+-- Tabela de itens da contagem de estoque
+CREATE TABLE itens_contagem_estoque
+(
+  id SERIAL PRIMARY KEY,
+  contagem_estoque_id INTEGER REFERENCES contagens_estoque(id) ON DELETE CASCADE,
+  produto_id INTEGER REFERENCES produtos(id),
+  quantidade_sistema INTEGER NOT NULL,
+  quantidade_contada INTEGER,
+  situacao VARCHAR(50) NOT NULL DEFAULT 'A_CONFERIR',
+  observacao TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT check_situacao CHECK (situacao IN ('A_CONFERIR', 'CONFERIDO', 'FALTANTE_EXCEDENTE'))
+);
+
+-- Tabela de usuários para autenticação
+CREATE TABLE usuarios
+(
+  id SERIAL PRIMARY KEY,
+  funcionario_id INTEGER REFERENCES funcionarios(id) ON DELETE CASCADE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

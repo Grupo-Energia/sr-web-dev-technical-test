@@ -1,54 +1,170 @@
-![repo](https://github.com/Grupo-Energia/sr-web-dev-technical-test/assets/162369419/10a6a72b-0bf4-42ce-bee0-31ebe7a368f5)
+# Technical Challenge — Fullstack Developer
 
+## Module: Scheduled Stock Count
 
-# Teste Técnico para Desenvolvedor Fullstack - Grupo Energia
+### Context
 
-## Objetivo:
-Desenvolver uma aplicação de gerenciamento de frotas com foco em automações.
+Imagine a scheduled stock count system for a technology equipment distribution company. On specific dates, the system schedules counting sessions for employees. On the counting day, the responsible person accesses the screen, physically checks the products, and records what they found.
 
-## Prazo para entrega sugerido para o projeto:
-10 ~ 15 dias
+Your challenge: implement a simplified version of this flow in TypeScript.
 
-## Descrição do Projeto:
-O candidato deve criar uma aplicação web utilizando React.js para o frontend e Node.js para o backend. A aplicação deve gerenciar uma frota de veículos, fornecendo funcionalidades de automação para melhorar a eficiência e a manutenção dos veículos. Para o frontend, pode ser utilizado qualquer framework ou biblioteca adicional que o candidato desejar (como Next.js, Remix, Waku ou Solid). Para o backend, o candidato pode utilizar qualquer banco de dados relacional de sua escolha (como PostgreSQL, MySQL, MariaDB ou CockroachDB) e pode utilizar qualquer framework ou biblioteca adicional que desejar (como Nest.js, Express.js, Fastify ou Hono).
+## Business Flow
 
-## Requisitos:
-- **Cadastro, edição e exclusão de veículos (CRUD).**
-- **Visualização da lista de veículos com informações detalhadas (modelo, ano, placa, etc.).**
-- **Implementar um sistema de notificações para alertar sobre eventos importantes (manutenção, troca de pneus, etc.). _(Obs: Isso pode ser feito apenas dentro do sistema, com um componente de notificação (como um "sino") na interface)_.**
-- **Implementar automações que auxiliem na gestão da frota (descrições abaixo).**
+A scheduled stock count includes:
 
-### Automação 1 - Previsão de Desgaste dos Pneus:
-Implementar uma funcionalidade que preveja o desgaste dos pneus com base na quilometragem percorrida. O sistema deve enviar notificações quando for necessário realizar a troca dos pneus.
+- Stock count code
+- Scheduled date
+- Responsible employee
+- List of items to be counted
 
-### Automação 2 - Manutenção Preventiva:
-Implementar uma automação que gere lembretes de manutenção preventiva (troca de óleo, revisões gerais) com base na quilometragem e no tempo de uso do veículo. O sistema deve enviar notificações automáticas para os responsáveis pelos veículos.
+Each item includes:
 
-### Automação 3 - Análise de Custo-Benefício:
-Implementar uma funcionalidade que analise dados históricos de compra e manutenção para calcular o melhor custo-benefício dos produtos e serviços adquiridos (pneus, óleo, peças, etc.). O sistema deve recomendar as melhores opções com base em desempenho e custo.
+- System code of the product
+- Product name
+- Quantity registered in the system (stored in the database—hidden on the screen)
+- Quantity counted by the employee
+- Stock count status
 
-## Diferenciais/Bônus:
-- Criar testes automatizados para a aplicação;
-- Implementar um sistema de autenticação e autorização de usuários;
-- Permitir a exportação desses relatórios em formatos comuns, como PDF e Excel;
-- Criar uma interface de usuário amigável e responsiva, com navegação intuitiva.
-- Realizar o deploy da aplicação em um servidor de sua escolha.
+### Interface Layout
 
-## Critérios de Avaliação:
-- Qualidade e organização do código;
-- Uso adequado de boas práticas de desenvolvimento;
-- Capacidade de implementar as funcionalidades solicitadas;
-- Criatividade na implementação das automações;
-- Intuitividade e facilidade de uso da aplicação.
+Items must appear in three sections:
 
+- `A Conferir` — items not yet counted. The user informs the quantity and confirms.
+- `Conferidos` — items where the counted quantity matches the system quantity. They appear read-only.
+- `Faltantes / Excedentes` — items with a difference between the counted quantity and the system quantity. Show the system code, product, informed quantity, and require an observation (e.g., "damaged product", "previous entry error").
 
-# Informações extras
-- Nesse repositório você também pode encontrar um arquivo chamado `suggested_schema.sql` com a estrutura do banco de dados que você pode utilizar para o projeto, juntamente com um arquivo chamado `sample_seed.sql`, para realizar o _seed_ do banco de dados com dados de exemplo. Este é apenas um esquema sugerido e você não precisa seguí-lo à risca.
-- Também está disponível um arquivo chamado `sample_api_documentation.md` com exemplos de como você pode implementar as rotas da sua API.
+### Main Rules
 
-## Referências e Ferramentas:
+1. When entering the quantity for an item in `A Conferir`:
+   - If `quantidade_contada == quantidade_sistema` → move to `Conferidos`.
+   - If `quantidade_contada != quantidade_sistema` → move to `Faltantes / Excedentes` and require `observacao`.
+2. The stock count can be saved partially (`status: EM_ANDAMENTO`) and resumed later.
+3. There must be a "Finalizar conferência" action:
+   - Show a confirmation modal with a message such as `Deseja concluir a conferência código: 1071? Ao confirmar não será possível continuar a fazer a conferência posteriormente.`
+   - After finalization, the stock count locks for editing (`status` → `FINALIZADA`).
 
-### Frameworks e Bibliotecas Frontend
+## Mandatory Stack
+
+- Language: TypeScript
+- Frontend: Next.js or TanStack Router in a React SPA/MPA
+- Backend HTTP API: Elysia (or another TypeScript REST solution)
+- Relational database of your choice: PostgreSQL, MySQL, SQLite, etc.
+- Suggested ORM/query builder: Drizzle, Prisma, Knex, etc.
+
+## Suggested Data Model (TypeScript examples)
+
+Funcionario (`employees`)
+
+```ts
+type Funcionario = {
+  id: string;
+  nome: string;
+  email: string;
+};
+```
+
+Produto (`products`)
+
+```ts
+type Produto = {
+  id: string;
+  codigoSistema: string; // code shown on screen
+  nome: string;
+};
+```
+
+EstoqueProduto (`product_stocks`)
+
+```ts
+type EstoqueProduto = {
+  id: string;
+  produtoId: string;
+  quantidadeSistema: number;
+};
+```
+
+ContagemEstoque (`stock_counts`)
+
+```ts
+type ContagemEstoque = {
+  id: string;
+  codigo: string; // e.g., "1071"
+  dataAgendada: Date;
+  responsavelId: string; // reference to "Funcionario"
+  status: "EM_ANDAMENTO" | "FINALIZADA";
+  criadoEm: Date;
+  atualizadoEm: Date;
+};
+```
+
+ItemContagemEstoque (`stock_count_items`)
+
+```ts
+type ItemContagemEstoque = {
+  id: string;
+  contagemEstoqueId: string; // reference to "ContagemEstoque"
+  produtoId: string; // reference to "Produto"
+  quantidadeSistema: number; // snapshot when creating the "ContagemEstoque"
+  quantidadeContada: number | null;
+  situacao: "A_CONFERIR" | "CONFERIDO" | "FALTANTE_EXCEDENTE";
+  observacao: string | null; // required when "FALTANTE_EXCEDENTE"
+};
+```
+
+Notes:
+
+- `quantidade_sistema` is copied from `product_stocks` when creating the `ContagemEstoque`.
+- `quantidade_contada` starts as `null`.
+- `situacao` starts as `A_CONFERIR`.
+
+## Suggested API Requirements (endpoints)
+
+GET `/contagens-estoque/:id` — returns `ContagemEstoque` data and its list of items (with `situacao` or grouped by section).
+
+PATCH `/itens-contagem-estoque/:id` — updates `quantidadeContada`, recalculates `situacao` using `quantidadeSistema`. If `FALTANTE_EXCEDENTE`, require `observacao`.
+
+PATCH `/contagens-estoque/:id/status` — allows:
+
+- Save as "Em andamento".
+- Finalize the `ContagemEstoque` (locks item editing).
+
+Note: You may organize endpoints differently as long as the flow is respected.
+
+## Frontend Requirements
+
+The stock count screen must display:
+
+- Stock count code
+- Date
+- Responsible employee
+
+Three visual sections:
+
+- `A Conferir` — numeric field to enter the quantity plus a per-item confirm button.
+- `Faltantes / Excedentes` — display item data and a mandatory observation field.
+- `Conferidos` — display item data in read-only mode.
+
+Global buttons:
+
+- "Salvar contagem" — saves partial progress.
+- "Finalizar conferência" — opens a confirmation modal and, if confirmed, locks the `ContagemEstoque`.
+
+The layout does not need a specific visual design; the conceptual organization is what matters.
+
+## Optional Differentials
+
+- Simple authentication per `Funcionario`.
+- Filters and search by product name or system code.
+- Visual emphasis for missing vs excess items (e.g., arrows or colors).
+- Basic automated tests.
+- Friendly error handling.
+- Clear folder structure in the backend and frontend.
+- Project deploy in a serverless architecture using Vercel, Netlify, Appwrite, or similar.
+
+## References and Tools
+
+### Frontend Frameworks and Libraries
+
 - [React.js](https://reactjs.org/)
 - [Next.js](https://nextjs.org/)
 - [Remix](https://remix.run/)
@@ -58,58 +174,64 @@ Implementar uma funcionalidade que analise dados históricos de compra e manuten
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 
-### Frameworks e Bibliotecas Backend
+### Backend Frameworks and Libraries
+
 - [Node.js](https://nodejs.org/en/)
 - [Express.js](https://expressjs.com/)
 - [Fastify](https://www.fastify.io/)
 - [Hono](https://hono.dev/)
 - [Nest.js](https://nestjs.com/)
 
-### Banco de Dados
+### Databases
+
 - [PostgreSQL](https://www.postgresql.org/)
 - [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.org/)
 - [CockroachDB](https://www.cockroachlabs.com/)
 - [Neon](https://neon.tech)
 
-### Linguagens de Programação
+### Programming Languages
+
 - [TypeScript](https://www.typescriptlang.org/)
 
-### Ferramentas de Testes
+### Testing Tools
+
 - [Jest](https://jestjs.io/)
 - [Cypress](https://www.cypress.io/)
 
-### Autenticação e Autorização
+### Authentication and Authorization
+
 - [JWT](https://jwt.io/)
 
-### Exportação de Relatórios em PDF e Excel
+### PDF and Excel Reporting
+
 - [jsPDF](https://github.com/parallax/jsPDF)
 - [SheetJS](https://sheetjs.com/)
 
 ### Deploy
+
 - [Heroku](https://www.heroku.com/)
 - [Fly.io](https://fly.io/)
 - [AWS](https://aws.amazon.com/)
 - [DigitalOcean](https://www.digitalocean.com/)
 - [Vercel](https://vercel.com/)
 - [Netlify](https://www.netlify.com/)
+- [Appwrite](https://appwrite.io/)
 
-### Containers e Orquestração
+### Containers and Orchestration
+
 - [Docker](https://www.docker.com/)
 - [Kubernetes](https://kubernetes.io/)
 
-### Documentação de APIs
+### API Documentation
+
 - [Postman](https://www.postman.com/)
 - [Insomnia](https://insomnia.rest/)
 - [Swagger](https://swagger.io/)
 - [OpenAPI](https://www.openapis.org/)
 
+### Delivery:
 
-## Entrega:
-- O código deve ser disponibilizado em um repositório Git público. Instruções claras sobre como rodar a aplicação localmente devem ser fornecidas no README do repositório. 
-- Após concluído, enviar o link com o repositório e seu CV para arielton@grupoenergia.eng.br.
+The code must be made available in a public Git repository. Clear instructions on how to run the application locally must be provided in the repository’s README.
 
-
-Boa sorte! Estamos ansiosos para ver sua solução inovadora para o gerenciamento de frotas.
-
-
+Once completed, send the repository link and your résumé to arielton@grupoenergia.eng.br
