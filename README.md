@@ -177,6 +177,7 @@ The layout does not need a specific visual design; the conceptual organization i
 ### Backend Frameworks and Libraries
 
 - [Node.js](https://nodejs.org/en/)
+- [Elysia](https://elysiajs.com/)
 - [Express.js](https://expressjs.com/)
 - [Fastify](https://www.fastify.io/)
 - [Hono](https://hono.dev/)
