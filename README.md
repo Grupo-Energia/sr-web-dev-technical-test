@@ -1,238 +1,228 @@
-# Technical Challenge — Fullstack Developer
+# Desafio Tecnico - Desenvolvedor Fullstack
 
-## Module: Scheduled Stock Count
+## Modulo: Conferencia de Estoque Agendada
 
-### Context
+### Contexto
 
-Imagine a scheduled stock count system for a technology equipment distribution company. On specific dates, the system schedules counting sessions for employees. On the counting day, the responsible person accesses the screen, physically checks the products, and records what they found.
+Imagine um sistema de conferencia de estoque agendada para uma empresa de distribuicao de equipamentos de tecnologia. Em datas especificas, o sistema agenda sessoes de conferencia para os funcionarios. No dia da conferencia, a pessoa responsavel acessa a tela, verifica fisicamente os produtos e registra as quantidades encontradas.
 
-Your challenge: implement a simplified version of this flow in TypeScript.
+Seu desafio e implementar uma versao simplificada desse fluxo usando React no frontend, Laravel no backend e PostgreSQL como banco de dados.
 
-## Business Flow
+## Fluxo de Negocio
 
-A scheduled stock count includes:
+Uma conferencia de estoque agendada possui:
 
-- Stock count code
-- Scheduled date
-- Responsible employee
-- List of items to be counted
+- Codigo da conferencia
+- Data agendada
+- Funcionario responsavel
+- Lista de itens a serem conferidos
 
-Each item includes:
+Cada item possui:
 
-- System code of the product
-- Product name
-- Quantity registered in the system (stored in the database—hidden on the screen)
-- Quantity counted by the employee
-- Stock count status
+- Codigo do produto no sistema
+- Nome do produto
+- Quantidade registrada no sistema, armazenada no banco e oculta na tela de conferencia
+- Quantidade contada pelo funcionario
+- Situacao do item na conferencia
 
-### Interface Layout
+### Organizacao da Interface
 
-Items must appear in three sections:
+Os itens devem aparecer em tres secoes:
 
-- `A Conferir` — items not yet counted. The user informs the quantity and confirms.
-- `Conferidos` — items where the counted quantity matches the system quantity. They appear read-only.
-- `Faltantes / Excedentes` — items with a difference between the counted quantity and the system quantity. Show the system code, product, informed quantity, and require an observation (e.g., "damaged product", "previous entry error").
+- `A Conferir`: itens ainda nao contados. O usuario informa a quantidade e confirma.
+- `Conferidos`: itens em que a quantidade contada e igual a quantidade do sistema. Devem aparecer somente para leitura.
+- `Faltantes / Excedentes`: itens com diferenca entre a quantidade contada e a quantidade do sistema. Devem exibir codigo do sistema, produto, quantidade informada e exigir uma observacao, por exemplo: "produto avariado" ou "erro de entrada anterior".
 
-### Main Rules
+### Regras Principais
 
-1. When entering the quantity for an item in `A Conferir`:
-   - If `quantidade_contada == quantidade_sistema` → move to `Conferidos`.
-   - If `quantidade_contada != quantidade_sistema` → move to `Faltantes / Excedentes` and require `observacao`.
-2. The stock count can be saved partially (`status: EM_ANDAMENTO`) and resumed later.
-3. There must be a "Finalizar conferência" action:
-   - Show a confirmation modal with a message such as `Deseja concluir a conferência código: 1071? Ao confirmar não será possível continuar a fazer a conferência posteriormente.`
-   - After finalization, the stock count locks for editing (`status` → `FINALIZADA`).
+1. Ao informar a quantidade de um item em `A Conferir`:
+   - Se `quantidade_contada == quantidade_sistema`, mover para `Conferidos`.
+   - Se `quantidade_contada != quantidade_sistema`, mover para `Faltantes / Excedentes` e exigir `observacao`.
+2. A conferencia pode ser salva parcialmente com `status: EM_ANDAMENTO` e retomada posteriormente.
+3. Deve existir uma acao "Finalizar conferencia":
+   - Exibir um modal de confirmacao com uma mensagem como: `Deseja concluir a conferencia codigo: 1071? Ao confirmar, nao sera possivel continuar a fazer a conferencia posteriormente.`
+   - Apos a finalizacao, a conferencia deve ficar bloqueada para edicao, com `status: FINALIZADA`.
 
-## Mandatory Stack
+## Stack Obrigatoria
 
-- Language: TypeScript
-- Frontend: Next.js or TanStack Router in a React SPA/MPA
-- Backend HTTP API: Elysia (or another TypeScript REST solution)
-- Relational database of your choice: PostgreSQL, MySQL, SQLite, etc.
-- Suggested ORM/query builder: Drizzle, Prisma, Knex, etc.
+- Frontend: React
+- Backend HTTP API: Laravel
+- Banco de dados: PostgreSQL
+- ORM: Eloquent ORM
+- Migrations e seeders: Laravel Migrations e Laravel Seeders
 
-## Suggested Data Model (TypeScript examples)
+O frontend pode ser implementado como SPA, por exemplo com Vite + React. O backend deve expor uma API REST em Laravel, consumida pelo frontend.
 
-Funcionario (`employees`)
+## Modelo de Dados Sugerido
 
-```ts
-type Funcionario = {
-  id: string;
-  nome: string;
-  email: string;
-};
-```
+### `funcionarios`
 
-Produto (`products`)
+| Campo | Tipo sugerido | Observacao |
+| --- | --- | --- |
+| `id` | `bigserial` | Chave primaria |
+| `nome` | `varchar(255)` | Obrigatorio |
+| `email` | `varchar(255)` | Obrigatorio e unico |
+| `created_at` | `timestamp` | Controlado pelo Laravel |
+| `updated_at` | `timestamp` | Controlado pelo Laravel |
 
-```ts
-type Produto = {
-  id: string;
-  codigoSistema: string; // code shown on screen
-  nome: string;
-};
-```
+### `produtos`
 
-EstoqueProduto (`product_stocks`)
+| Campo | Tipo sugerido | Observacao |
+| --- | --- | --- |
+| `id` | `bigserial` | Chave primaria |
+| `codigo_sistema` | `varchar(100)` | Codigo exibido na tela, obrigatorio e unico |
+| `nome` | `varchar(255)` | Obrigatorio |
+| `created_at` | `timestamp` | Controlado pelo Laravel |
+| `updated_at` | `timestamp` | Controlado pelo Laravel |
 
-```ts
-type EstoqueProduto = {
-  id: string;
-  produtoId: string;
-  quantidadeSistema: number;
-};
-```
+### `estoques_produtos`
 
-ContagemEstoque (`stock_counts`)
+| Campo | Tipo sugerido | Observacao |
+| --- | --- | --- |
+| `id` | `bigserial` | Chave primaria |
+| `produto_id` | `foreignId` | Referencia `produtos.id` |
+| `quantidade_sistema` | `integer` | Quantidade atual registrada no sistema |
+| `created_at` | `timestamp` | Controlado pelo Laravel |
+| `updated_at` | `timestamp` | Controlado pelo Laravel |
 
-```ts
-type ContagemEstoque = {
-  id: string;
-  codigo: string; // e.g., "1071"
-  dataAgendada: Date;
-  responsavelId: string; // reference to "Funcionario"
-  status: "EM_ANDAMENTO" | "FINALIZADA";
-  criadoEm: Date;
-  atualizadoEm: Date;
-};
-```
+### `contagens_estoque`
 
-ItemContagemEstoque (`stock_count_items`)
+| Campo | Tipo sugerido | Observacao |
+| --- | --- | --- |
+| `id` | `bigserial` | Chave primaria |
+| `codigo` | `varchar(50)` | Obrigatorio e unico, exemplo: `1071` |
+| `data_agendada` | `date` | Data prevista para a conferencia |
+| `responsavel_id` | `foreignId` | Referencia `funcionarios.id` |
+| `status` | `varchar(50)` | `EM_ANDAMENTO` ou `FINALIZADA` |
+| `created_at` | `timestamp` | Controlado pelo Laravel |
+| `updated_at` | `timestamp` | Controlado pelo Laravel |
 
-```ts
-type ItemContagemEstoque = {
-  id: string;
-  contagemEstoqueId: string; // reference to "ContagemEstoque"
-  produtoId: string; // reference to "Produto"
-  quantidadeSistema: number; // snapshot when creating the "ContagemEstoque"
-  quantidadeContada: number | null;
-  situacao: "A_CONFERIR" | "CONFERIDO" | "FALTANTE_EXCEDENTE";
-  observacao: string | null; // required when "FALTANTE_EXCEDENTE"
-};
-```
+### `itens_contagem_estoque`
 
-Notes:
+| Campo | Tipo sugerido | Observacao |
+| --- | --- | --- |
+| `id` | `bigserial` | Chave primaria |
+| `contagem_estoque_id` | `foreignId` | Referencia `contagens_estoque.id` |
+| `produto_id` | `foreignId` | Referencia `produtos.id` |
+| `quantidade_sistema` | `integer` | Snapshot da quantidade ao criar a conferencia |
+| `quantidade_contada` | `integer nullable` | Comeca como `null` |
+| `situacao` | `varchar(50)` | `A_CONFERIR`, `CONFERIDO` ou `FALTANTE_EXCEDENTE` |
+| `observacao` | `text nullable` | Obrigatoria quando `situacao` for `FALTANTE_EXCEDENTE` |
+| `created_at` | `timestamp` | Controlado pelo Laravel |
+| `updated_at` | `timestamp` | Controlado pelo Laravel |
 
-- `quantidade_sistema` is copied from `product_stocks` when creating the `ContagemEstoque`.
-- `quantidade_contada` starts as `null`.
-- `situacao` starts as `A_CONFERIR`.
+Observacoes:
 
-## Suggested API Requirements (endpoints)
+- `quantidade_sistema` deve ser copiada de `estoques_produtos` quando a `contagens_estoque` for criada.
+- `quantidade_contada` deve iniciar como `null`.
+- `situacao` deve iniciar como `A_CONFERIR`.
+- O banco PostgreSQL deve validar, sempre que possivel, os valores aceitos para `status` e `situacao`.
 
-GET `/contagens-estoque/:id` — returns `ContagemEstoque` data and its list of items (with `situacao` or grouped by section).
+## Requisitos Sugeridos da API
 
-PATCH `/itens-contagem-estoque/:id` — updates `quantidadeContada`, recalculates `situacao` using `quantidadeSistema`. If `FALTANTE_EXCEDENTE`, require `observacao`.
+Use rotas REST no Laravel, preferencialmente dentro de `routes/api.php`.
 
-PATCH `/contagens-estoque/:id/status` — allows:
+GET `/api/contagens-estoque/{id}`: retorna os dados da conferencia e sua lista de itens, com `situacao` ou agrupados por secao.
 
-- Save as "Em andamento".
-- Finalize the `ContagemEstoque` (locks item editing).
+PATCH `/api/itens-contagem-estoque/{id}`: atualiza `quantidade_contada`, recalcula `situacao` usando `quantidade_sistema` e exige `observacao` quando o item for `FALTANTE_EXCEDENTE`.
 
-Note: You may organize endpoints differently as long as the flow is respected.
+PATCH `/api/contagens-estoque/{id}/status`: permite:
 
-## Frontend Requirements
+- Salvar como `EM_ANDAMENTO`.
+- Finalizar a conferencia, alterando o status para `FINALIZADA` e bloqueando a edicao dos itens.
 
-The stock count screen must display:
+Voce pode organizar os endpoints de outra forma, desde que o fluxo seja respeitado.
 
-- Stock count code
-- Date
-- Responsible employee
+## Requisitos do Frontend
 
-Three visual sections:
+A tela de conferencia de estoque em React deve exibir:
 
-- `A Conferir` — numeric field to enter the quantity plus a per-item confirm button.
-- `Faltantes / Excedentes` — display item data and a mandatory observation field.
-- `Conferidos` — display item data in read-only mode.
+- Codigo da conferencia
+- Data agendada
+- Funcionario responsavel
 
-Global buttons:
+Tres secoes visuais:
 
-- "Salvar contagem" — saves partial progress.
-- "Finalizar conferência" — opens a confirmation modal and, if confirmed, locks the `ContagemEstoque`.
+- `A Conferir`: campo numerico para informar a quantidade e botao de confirmacao por item.
+- `Faltantes / Excedentes`: dados do item e campo obrigatorio de observacao.
+- `Conferidos`: dados do item em modo somente leitura.
 
-The layout does not need a specific visual design; the conceptual organization is what matters.
+Botoes globais:
 
-## Optional Differentials
+- `Salvar contagem`: salva o progresso parcial.
+- `Finalizar conferencia`: abre um modal de confirmacao e, se confirmado, bloqueia a conferencia.
 
-- Simple authentication per `Funcionario`.
-- Filters and search by product name or system code.
-- Visual emphasis for missing vs excess items (e.g., arrows or colors).
-- Basic automated tests.
-- Friendly error handling.
-- Clear folder structure in the backend and frontend.
-- Project deploy in a serverless architecture using Vercel, Netlify, Appwrite, or similar.
+O layout nao precisa seguir um design visual especifico. O mais importante e a organizacao conceitual da tela e o funcionamento correto do fluxo.
 
-## References and Tools
+## Requisitos do Backend
 
-### Frontend Frameworks and Libraries
+O backend em Laravel deve conter:
 
-- [React.js](https://reactjs.org/)
-- [Next.js](https://nextjs.org/)
-- [Remix](https://remix.run/)
-- [Solid](https://www.solidjs.com/)
-- [Waku](https://waku.gg/)
-- [Chakra UI](https://chakra-ui.com/)
+- Migrations para PostgreSQL.
+- Models Eloquent com relacionamentos entre funcionarios, produtos, estoques, contagens e itens.
+- Controllers ou actions para os endpoints principais.
+- Validacao de entrada, preferencialmente com Form Requests.
+- Regras de negocio para recalcular a situacao dos itens.
+- Bloqueio de edicao quando a conferencia estiver `FINALIZADA`.
+- Seeders com dados minimos para testar o fluxo.
+
+## Diferenciais Opcionais
+
+- Autenticacao simples por funcionario.
+- Filtros e busca por nome do produto ou codigo do sistema.
+- Destaque visual para itens faltantes e excedentes.
+- Testes automatizados no Laravel, usando PHPUnit ou Pest.
+- Testes de interface no React, usando Cypress, Playwright ou Testing Library.
+- Tratamento amigavel de erros.
+- Estrutura clara de pastas no backend e no frontend.
+- Docker Compose com Laravel, React e PostgreSQL.
+- Deploy do frontend e backend em ambiente de sua escolha.
+
+## Referencias e Ferramentas
+
+### Frontend
+
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [React Router](https://reactrouter.com/)
+- [TanStack Query](https://tanstack.com/query/latest)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 
-### Backend Frameworks and Libraries
+### Backend
 
-- [Node.js](https://nodejs.org/en/)
-- [Elysia](https://elysiajs.com/)
-- [Express.js](https://expressjs.com/)
-- [Fastify](https://www.fastify.io/)
-- [Hono](https://hono.dev/)
-- [Nest.js](https://nestjs.com/)
+- [Laravel](https://laravel.com/)
+- [Eloquent ORM](https://laravel.com/docs/eloquent)
+- [Laravel Migrations](https://laravel.com/docs/migrations)
+- [Laravel Validation](https://laravel.com/docs/validation)
 
-### Databases
+### Banco de Dados
 
 - [PostgreSQL](https://www.postgresql.org/)
-- [MySQL](https://www.mysql.com/)
-- [MariaDB](https://mariadb.org/)
-- [CockroachDB](https://www.cockroachlabs.com/)
-- [Neon](https://neon.tech)
 
-### Programming Languages
+### Testes
 
-- [TypeScript](https://www.typescriptlang.org/)
-
-### Testing Tools
-
-- [Jest](https://jestjs.io/)
+- [PHPUnit](https://phpunit.de/)
+- [Pest](https://pestphp.com/)
 - [Cypress](https://www.cypress.io/)
+- [Playwright](https://playwright.dev/)
 
-### Authentication and Authorization
-
-- [JWT](https://jwt.io/)
-
-### PDF and Excel Reporting
-
-- [jsPDF](https://github.com/parallax/jsPDF)
-- [SheetJS](https://sheetjs.com/)
-
-### Deploy
-
-- [Heroku](https://www.heroku.com/)
-- [Fly.io](https://fly.io/)
-- [AWS](https://aws.amazon.com/)
-- [DigitalOcean](https://www.digitalocean.com/)
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
-- [Appwrite](https://appwrite.io/)
-
-### Containers and Orchestration
-
-- [Docker](https://www.docker.com/)
-- [Kubernetes](https://kubernetes.io/)
-
-### API Documentation
+### Documentacao de API
 
 - [Postman](https://www.postman.com/)
 - [Insomnia](https://insomnia.rest/)
 - [Swagger](https://swagger.io/)
 - [OpenAPI](https://www.openapis.org/)
 
-### Delivery:
+## Entrega
 
-The code must be made available in a public Git repository. Clear instructions on how to run the application locally must be provided in the repository’s README.
+O codigo deve ser disponibilizado em um repositorio Git publico. O README do projeto entregue deve conter instrucoes claras de como executar a aplicacao localmente, incluindo:
 
-Once completed, send the repository link and your résumé to arielton@grupoenergia.eng.br
+- Requisitos de ambiente
+- Instalacao das dependencias do frontend e backend
+- Configuracao do arquivo `.env` do Laravel
+- Configuracao da conexao com PostgreSQL
+- Execucao das migrations e seeders
+- Comandos para iniciar a API Laravel e o frontend React
+
+Apos concluir, envie o link do repositorio e seu curriculo para arielton@grupoenergia.eng.br.
