@@ -225,4 +225,4 @@ O codigo deve ser disponibilizado em um repositorio Git publico. O README do pro
 - Execucao das migrations e seeders
 - Comandos para iniciar a API Laravel e o frontend React
 
-Apos concluir, envie o link do repositorio e seu curriculo para arielton@grupoenergia.eng.br.
+Apos concluir, envie o link do repositorio e seu curriculo para ti@grupoenergia.eng.br.
